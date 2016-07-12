@@ -3,6 +3,12 @@ drone-marathon
 
 Deploys to a Marathon cluster
 
+This module takes MASSIVE inspiration from https://github.com/drone-plugins/drone-marathon,
+but this one is:
+
+- Written in Python (since that's what our team knows better than Go)
+- Available for Drone.io v0.4 (the official one is still in-development for v0.5)
+
 Overview
 --------
 
