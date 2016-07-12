@@ -32,9 +32,13 @@ Run the plugin directly after installing requirements:
             "author_email": "john.smith@gmail.com"
         },
         "vargs": {
-            "room_auth_token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-            "room_id_or_name": 1234567,
-            "message_notify": true
+            "server": "http://marathon.example.com:8080",
+            "id": "myapp",
+            "instances": 1,
+            "cpus": 0.25,
+            "mem": 64,
+            "docker_image": mycompany/someapp,
+            ...
         }
     }
     EOF
