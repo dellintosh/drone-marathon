@@ -23,7 +23,7 @@ class DroneMarathon(object):
         except KeyError:
             raise KeyError("Must provide value for `{}`".format(key))
 
-    def __build_marathon_payload(self, args):
+    def __build_marathon_payload(self):
         result = {}
 
         result['id'] = self.__get_argument('id')
@@ -37,21 +37,21 @@ class DroneMarathon(object):
             'type': 'DOCKER',
             'volumes': [],
             'docker': {
-                'forcePullImage': args.get('docker_force_pull', False),
+                'forcePullImage': self.vargs.get('docker_force_pull', False),
                 'image': self.__get_argument('docker_image'),
-                'network': args.get('docker_network', 'BRIDGE'),
-                'parameters': args.get('docker_parameters', []),  # TODO: Parse these
-                'portMappings': args.get('docker_port_mappings', []),  # TODO: Parse these
-                'privileged': args.get('docker_privileged', False),
+                'network': self.vargs.get('docker_network', 'BRIDGE'),
+                'parameters': self.vargs.get('docker_parameters', []),  # TODO: Parse these
+                'portMappings': self.vargs.get('docker_port_mappings', []),  # TODO: Parse these
+                'privileged': self.vargs.get('docker_privileged', False),
             }
         }
 
         # Process Environment
-        result['env'] = args.get('process_environment', {})
+        result['env'] = self.vargs.get('process_environment', {})
 
         # Check these arrays ?
-        result['uris'] = args.get('uris', [])
-        result['args'] = args.get('args', [])
+        result['uris'] = self.vargs.get('uris', [])
+        result['args'] = self.vargs.get('args', [])
 
         return result
 
