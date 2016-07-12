@@ -2,68 +2,78 @@
 """
 Deploys to a Marathon cluster
 """
-import drone
-import requests
+import subprocess
+
+from drone import plugin
 
 
-def __get_argument(args, key):
-    try:
-        return args[key]
-    except KeyError:
-        raise KeyError("Must provide value for `{}`".format(key))
+class DroneMarathon(object):
 
+    def __init__(self):
+        args = plugin.get_input()
+        try:
+            self.cwd = args['workspace']['path']
+        except KeyError:
+            self.cwd = None
+        self.vargs = args['vargs']
 
-def __build_marathon_payload(args):
-    result = {}
+    def __get_argument(self, key):
+        try:
+            return self.vargs[key]
+        except KeyError:
+            raise KeyError("Must provide value for `{}`".format(key))
 
-    result['id'] = __get_argument(args, 'id')
-    result['instances'] = __get_argument(args, 'instances')
-    result['cpus'] = __get_argument(args, 'cpus')
-    result['mem'] = __get_argument(args, 'mem')
-    result['cmd'] = __get_argument(args, 'cmd')
+    def __build_marathon_payload(self, args):
+        result = {}
 
-    # Docker container
-    result['container'] = {
-        'type': 'DOCKER',
-        'volumes': [],
-        'docker': {
-            'forcePullImage': args.get('docker_force_pull', False),
-            'image': __get_argument(args, 'docker_image'),
-            'network': args.get('docker_network', 'BRIDGE'),
-            'parameters': args.get('docker_parameters', []),  # TODO: Parse these
-            'portMappings': args.get('docker_port_mappings', []),  # TODO: Parse these
-            'privileged': args.get('docker_privileged', False),
+        result['id'] = self.__get_argument('id')
+        result['instances'] = self.__get_argument('instances')
+        result['cpus'] = self.__get_argument('cpus')
+        result['mem'] = self.__get_argument('mem')
+        result['cmd'] = self.__get_argument('cmd')
+
+        # Docker container
+        result['container'] = {
+            'type': 'DOCKER',
+            'volumes': [],
+            'docker': {
+                'forcePullImage': args.get('docker_force_pull', False),
+                'image': self.__get_argument('docker_image'),
+                'network': args.get('docker_network', 'BRIDGE'),
+                'parameters': args.get('docker_parameters', []),  # TODO: Parse these
+                'portMappings': args.get('docker_port_mappings', []),  # TODO: Parse these
+                'privileged': args.get('docker_privileged', False),
+            }
         }
-    }
 
-    # Process Environment
-    result['env'] = args.get('process_environment', {})
+        # Process Environment
+        result['env'] = args.get('process_environment', {})
 
-    # Check these arrays ?
-    result['uris'] = args.get('uris', [])
-    result['args'] = args.get('args', [])
+        # Check these arrays ?
+        result['uris'] = args.get('uris', [])
+        result['args'] = args.get('args', [])
 
-    return result
+        return result
 
+    def run(self):
+        """
+        The main entrypoint for the plugin.
+        """
+        # Retrives plugin input from stdin/argv, parses the JSON, returns a dict.
+        # payload = plugin.get_input()
+        # vargs are where the values passed in the YaML reside.
+        # vargs = payload["vargs"]
 
-def main():
-    """
-    The main entrypoint for the plugin.
-    """
-    # Retrives plugin input from stdin/argv, parses the JSON, returns a dict.
-    payload = drone.plugin.get_input()
-    # vargs are where the values passed in the YaML reside.
-    vargs = payload["vargs"]
+        # Formulate the POST request.
+        server = self.__get_argument('server')
 
-    # Formulate the POST request.
-    server = __get_argument(vargs, 'server')
-
-    data = __build_marathon_payload(vargs)
-    print("Built Marathon (at {}) application definition: {}".format(server, data))
-    # data = payload["build"]
-    # response = requests.post(vargs["url"], data=data)
-    # response.raise_for_status()
+        data = self.__build_marathon_payload()
+        print("Built Marathon (at {}) application definition: {}".format(server, data))
+        # data = payload["build"]
+        # response = requests.post(vargs["url"], data=data)
+        # response.raise_for_status()
 
 
-if __name__ == "__main__":
-    main()
+class MarathonCliError(subprocess.CalledProcessError):
+
+    pass
