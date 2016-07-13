@@ -94,12 +94,12 @@ class DroneMarathon(object):
         app_uri = '{}/v2/apps'.format(server)
         data = self.__build_marathon_payload()
         payload = json.dumps(data)
+        app_id = data['id']
 
         print("Deploying Marathon Application (at {})".format(app_uri))
 
-        check_app_exists = requests.get('{}{}'.format(app_uri, data['id'])).ok
+        check_app_exists = requests.get('{}{}'.format(app_uri, app_id)).ok
         if check_app_exists:
-            app_id = data['id']
             print("Application {} already exists...updating.".format(app_id))
 
             temp = json.loads(payload)
@@ -109,7 +109,7 @@ class DroneMarathon(object):
 
             response = requests.put('{}{}'.format(app_uri, app_id), data=payload)
         else:
-            print("Application {} does not exist...creating it now.".format(data['id']))
+            print("Application {} does not exist...creating it now.".format(app_id))
             response = requests.post(app_uri, data=payload)
 
         # Trigger a restart to get new release (if applicable).
