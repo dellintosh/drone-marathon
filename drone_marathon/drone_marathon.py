@@ -78,7 +78,8 @@ class DroneMarathon(object):
         result['labels'] = self.vargs.get('labels', {})
 
         # Process Environment
-        result['env'] = self.vargs.get('process_environment', {})
+        if 'process_environment' in self.vargs:
+            result['env'] = self.vargs['process_environment']
 
         # Check these arrays ?
         result['uris'] = self.vargs.get('uris', [])
