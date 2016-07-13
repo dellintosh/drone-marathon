@@ -112,6 +112,10 @@ class DroneMarathon(object):
             print("Application {} does not exist...creating it now.".format(data['id']))
             response = requests.post(app_uri, data=payload)
 
+        # Trigger a restart to get new release (if applicable).
+        if self.vargs.get('trigger_restart', False):
+            requests.post('{}{}/restart'.format(app_uri, app_id))
+
         print("Response from Marathon: {}".format(response.json()))
 
         if not response.ok:

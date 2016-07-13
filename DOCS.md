@@ -57,6 +57,7 @@ The following parameters are used to configure this plugin:
 ||*`mode`*                    | possible values are RO for ReadOnly and RW for Read/Write 
 |`docker_parameters`          | a map of arbitrary parameters to be passed to docker CLI |
 |`debug`                      | print request and response info |
+|`trigger_restart`            | (optional default: false) force an application restart after deploy |
 
 
 The following are sample configuration for your .drone.yml file.
