@@ -105,7 +105,7 @@ class DroneMarathon(object):
             temp = json.loads(payload)
             del temp['id']
             payload = json.dumps(temp)
-            print("Application id removed.  New data: {}".format(payload))
+            # print("Application id removed.  New data: {}".format(payload))
 
             response = requests.put('{}{}'.format(app_uri, app_id), data=payload)
         else:
