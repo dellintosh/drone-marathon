@@ -3,7 +3,7 @@
 Deploys to a Marathon cluster
 """
 import json
-import subprocess
+# import subprocess
 
 from drone import plugin
 import requests
@@ -33,6 +33,20 @@ class DroneMarathon(object):
             'protocol': mapping.get('protocol', 'tcp'),
         }
 
+    def __marathon_health_check(self, check):
+        return {
+            'path': check.get('path', '/'),
+            'protocol': check.get('protocol', 'HTTP'),
+            'portIndex': check.get('port_index', 0),
+            'gracePeriodSeconds': check.get('grace_period_seconds', 300),
+            'intervalSeconds': check.get('interval_seconds', 60),
+            'timeoutSeconds': check.get('timeout_seconds', 20),
+            'maxConsecutiveFailures': check.get('max_consecutive_failures', 3)
+        }
+        # TODO: Add these?
+        # 'port': health_check.get('port'),
+        # 'command': health_check.get('command', )
+
     def __build_marathon_payload(self):
         result = {}
 
@@ -57,33 +71,20 @@ class DroneMarathon(object):
         }
 
         # Health Checks
-        health_checks = []
-        for health_check in self.vargs.get('health_checks', []):
-            health_checks.append({
-                'path': health_check.get('path', "/"),
-                'protocol': health_check.get('protocol', 'HTTP'),
-                'portIndex': health_check.get('port_index', 0),
-                'gracePeriodSeconds': health_check.get('grace_period_seconds', 300),
-                'intervalSeconds': health_check.get('interval_seconds', 60),
-                'timeoutSeconds': health_check.get('timeout_seconds', 20),
-                'maxConsecutiveFailures': health_check.get('max_consecutive_failures', 3)
-            })
+        result['healthChecks'] = [
+            self.__marathon_health_check(check) for check in self.vargs.get('health_checks', [])
+        ]
 
-        # TODO: Add these?
-        # 'port': health_check.get('port'),
-        # 'command': health_check.get('command', )
-
-        if health_checks:
-            result['healthChecks'] = health_checks
+        # print("Health Checks defined: {}".format(result['healthChecks']))
 
         # Labels
-        # result['labels'] = self.vargs.get('labels', {})
+        result['labels'] = self.vargs.get('labels', {})
 
         # Process Environment
-        # result['env'] = self.vargs.get('process_environment', {})
+        result['env'] = self.vargs.get('process_environment', {})
 
         # Check these arrays ?
-        # result['uris'] = self.vargs.get('uris', [])
+        result['uris'] = self.vargs.get('uris', [])
         # result['args'] = self.vargs.get('args', [])
 
         return result
@@ -104,9 +105,28 @@ class DroneMarathon(object):
         data = self.__build_marathon_payload()
         payload = json.dumps(data)
 
-        print("Deploying Marathon Application (at {}) definition: {}".format(app_uri, payload))
-        response = requests.post(app_uri, data=payload)
+        print("Deploying Marathon Application (at {})".format(app_uri))
+
+        check_app_exists = requests.get('{}{}'.format(app_uri, data['id'])).ok
+        if check_app_exists:
+            app_id = data['id']
+            print("Application {} already exists...updating.".format(app_id))
+
+            temp = json.loads(payload)
+            del temp['id']
+            payload = json.dumps(temp)
+            print("Application id removed.  New data: {}".format(payload))
+
+            response = requests.put('{}{}'.format(app_uri, app_id), data=payload)
+        else:
+            print("Application {} does not exist...creating it now.".format(data['id']))
+            response = requests.post(app_uri, data=payload)
+
         print("Response from Marathon: {}".format(response.json()))
+
+        if not response.ok:
+            print("Unable to deploy application to Marathon.")
+            raise MarathonCliError("Unable to deploy application to Marathon.")
 
         # data = payload["build"]
         # response = requests.post(vargs["url"], data=data)
@@ -116,6 +136,6 @@ class DroneMarathon(object):
         return True
 
 
-class MarathonCliError(subprocess.CalledProcessError):
+class MarathonCliError(Exception):
 
-    pass
+    returncode = 1

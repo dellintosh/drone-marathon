@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 import sys
 
-from drone_marathon import DroneMarathon, MarathonCliError
+from drone_marathon import DroneMarathon
 
 
 if __name__ == '__main__':
     try:
         DroneMarathon().run()
-    except MarathonCliError as e:
+    except Exception as e:
         sys.exit(e.returncode)
     sys.exit(0)
