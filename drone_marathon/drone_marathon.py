@@ -3,7 +3,6 @@
 Deploys to a Marathon cluster
 """
 import json
-# import subprocess
 
 from drone import plugin
 import requests
@@ -75,8 +74,6 @@ class DroneMarathon(object):
             self.__marathon_health_check(check) for check in self.vargs.get('health_checks', [])
         ]
 
-        # print("Health Checks defined: {}".format(result['healthChecks']))
-
         # Labels
         result['labels'] = self.vargs.get('labels', {})
 
@@ -85,7 +82,7 @@ class DroneMarathon(object):
 
         # Check these arrays ?
         result['uris'] = self.vargs.get('uris', [])
-        # result['args'] = self.vargs.get('args', [])
+        result['args'] = self.vargs.get('args', [])
 
         return result
 
@@ -93,14 +90,7 @@ class DroneMarathon(object):
         """
         The main entrypoint for the plugin.
         """
-        # Retrives plugin input from stdin/argv, parses the JSON, returns a dict.
-        # payload = plugin.get_input()
-        # vargs are where the values passed in the YaML reside.
-        # vargs = payload["vargs"]
-
-        # Formulate the POST request.
         server = self.__get_argument('server')
-        # app_uri = '{}/v2/apps{}'.format(server, self.vargs.get('id', ''))
         app_uri = '{}/v2/apps'.format(server)
         data = self.__build_marathon_payload()
         payload = json.dumps(data)
@@ -127,11 +117,6 @@ class DroneMarathon(object):
         if not response.ok:
             print("Unable to deploy application to Marathon.")
             raise MarathonCliError("Unable to deploy application to Marathon.")
-
-        # data = payload["build"]
-        # response = requests.post(vargs["url"], data=data)
-        # response.raise_for_status()
-        # print("TODO: Implement push to Marathon here!")
 
         return True
 
