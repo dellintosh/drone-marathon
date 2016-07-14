@@ -6,6 +6,17 @@ build:
     # - flake8 setup.py drone_tower bin tests
     # - nosetests -s --with-coverage --cover-package drone_tower -v
 
+publish:
+  docker:
+    username: $$DOCKER_USER
+    password: $$DOCKER_PASS
+    email: $$DOCKER_EMAIL
+    repo: e20co/drone-marathon
+    tag: latest
+    file: Dockerfile
+    when:
+      branch: master
+
 plugin:
   name: Marathon
   desc: Deploy an application to a Marathon cluster
