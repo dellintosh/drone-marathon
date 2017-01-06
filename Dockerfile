@@ -1,20 +1,17 @@
-# Deploys to a Marathon cluster
-#
-#     docker build --rm=true -t expansioncap/drone-marathon .
+FROM python:3.5.1-alpine
 
-FROM gliderlabs/alpine:3.2
-MAINTAINER Justus Luthy <jluthy@expansioncapitalgroup.com>
+RUN apk add -U \
+    ca-certificates \
+ && rm -rf /var/cache/apk/* \
+ && pip install --no-cache-dir --upgrade \
+    pip \
+    setuptools \
+    wheel
 
-RUN apk-install python3 bash
-#RUN mkdir -p /tmp/drone-marathon
+WORKDIR /usr/src/app/
+ADD requirements.txt .
+RUN pip install -r requirements.txt
+RUN pip install --use-wheel --no-index -r requirements.txt
+ADD run_marathon.py /usr/bin/
 
-COPY requirements.txt /tmp/drone-marathon/
-RUN pip3 install -r /tmp/drone-marathon/requirements.txt
-#WORKDIR /tmp/drone-marathon
-
-ADD ./ /tmp/drone-marathon
-RUN cd /tmp/drone-marathon \
-    && python3 setup.py install \
-    && rm -rf /tmp/drone-marathon
-
-ENTRYPOINT ["drone-marathon"]
+ENTRYPOINT ["python3", "/usr/bin/run_marathon.py"]

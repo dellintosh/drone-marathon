@@ -1,0 +1,31 @@
+{
+  "id": "/demo-application",
+  "instances": 1,
+  "cpus": 0.2,
+  "mem": 256,
+  "container": {
+    "type": "docker",
+    "docker": {
+      "image": "nginx:<<TAG>>",
+      "network": "BRIDGE",
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 0,
+          "protocol": "tcp"
+        }
+      ]
+    }
+  },
+  "healthChecks": [
+    {
+      "gracePeriodSeconds": 120,
+      "intervalSeconds": 30,
+      "maxConsecutiveFailures": 3,
+      "path": "/",
+      "portIndex": 0,
+      "protocol": "HTTP",
+      "timeoutSeconds": 5
+    }
+  ]
+}

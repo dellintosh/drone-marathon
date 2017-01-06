@@ -1,28 +1,22 @@
-build:
-  image: python:3.4
-  commands:
-    - pip install -r requirements.txt
-    - pip install -r dev-requirements.txt
-    # - flake8 setup.py drone_tower bin tests
-    # - nosetests -s --with-coverage --cover-package drone_tower -v
+pipeline:
+  build:
+    image: python:3.5.1-alpine
+    commands:
+      - pip install --no-cache-dir --upgrade pip setuptools wheel flake8
+      - flake8 run_marathon.py
+      - pip wheel -r requirements.txt --wheel-dir=wheeldir --find-links=wheeldir
+      - pip install --use-wheel --no-index --find-links=wheeldir -r requirements.txt
+      # - python test.py
 
-publish:
   docker:
-    username: $$DOCKER_USER
-    password: $$DOCKER_PASS
-    email: $$DOCKER_EMAIL
+    image: plugins/docker
     repo: e20co/drone-marathon
-    tag: latest
-    file: Dockerfile
+    tag: 0.5
     when:
-      branch: master
+      branch: drone-0.5
+      event: push
 
-plugin:
-  name: Marathon
-  desc: Deploy an application to a Marathon cluster
-  type: deploy
-  image: e20co/drone-marathon
-  labels:
-    - deploy
-    - marathon
-    - mesos
+# TODO: We need to figure out how to test this package...
+# services:
+#   marathon:
+#     image: mesosphere/marathon:v0.13.0-RC2
