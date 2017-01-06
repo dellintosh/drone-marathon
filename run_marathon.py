@@ -22,7 +22,52 @@ def validate_marathon_server_url(config_val, evar):
     return config_val
 
 
-environment_variables = ConfigStore({
+def __build_marathon_payload(marathon_file, values):
+    # Load marathon_file data
+    with open(marathon_file, encoding='utf-8') as data_file:
+        data = data_file.read()
+
+    # Update the values in the marathon_file
+    for k, v in values.items():
+        data = data.replace('<<{}>>'.format(k), v)
+
+    return data
+
+
+def deploy_application(server, marathon_file, values, trigger_restart=False):
+    app_uri = '{}/v2/apps'.format(server)
+    payload = __build_marathon_payload(marathon_file, values)
+    app_id = json.loads(payload)['id']
+
+    print("Deploying Marathon Application (at {})".format(app_uri))
+
+    check_app_exists = requests.get('{}{}'.format(app_uri, app_id)).ok
+    if check_app_exists:
+        print("Application {} already exists...updating.".format(app_id))
+
+        temp = json.loads(payload)
+        del temp['id']
+        payload = json.dumps(temp)
+
+        response = requests.put('{}{}'.format(app_uri, app_id), data=payload)
+    else:
+        print("Application {} does not exist, creating it now.".format(app_id))
+        response = requests.post(app_uri, data=payload)
+
+    # Trigger a restart to get new release (if applicable).
+    if trigger_restart:
+        requests.post('{}{}/restart'.format(app_uri, app_id))
+
+    print("Response from Marathon: {}".format(response.json()))
+
+    if not response.ok:
+        print("Unable to deploy application to Marathon.")
+        raise Exception("Unable to deploy application to Marathon.")
+
+    return True
+
+
+config_store = ConfigStore({
     'SERVER': EnvironmentVariable(
         name='PLUGIN_SERVER',
         filters=[
@@ -72,72 +117,23 @@ environment_variables = ConfigStore({
     )
 })
 
-# marathon uses a 'clientdir' arg to determine where to store state. We make
-# this overridable below to facilitate the integration test process.
-DEFAULT_CLIENTDIR = '/tmp/marathon-clientdir'
-
-
-def __build_marathon_payload(marathon_file, values):
-    # Load marathon_file data
-    with open(marathon_file, encoding='utf-8') as data_file:
-        data = data_file.read()
-
-    # Update the values in the marathon_file
-    for k, v in values.items():
-        data = data.replace('<<{}>>'.format(k), v)
-
-    return data
-
-
-def deploy_application(server, marathon_file, values, trigger_restart=False):
-    app_uri = '{}/v2/apps'.format(server)
-    payload = __build_marathon_payload(marathon_file, values)
-    app_id = json.loads(payload)['id']
-
-    print("Deploying Marathon Application (at {})".format(app_uri))
-
-    check_app_exists = requests.get('{}{}'.format(app_uri, app_id)).ok
-    if check_app_exists:
-        print("Application {} already exists...updating.".format(app_id))
-
-        temp = json.loads(payload)
-        del temp['id']
-        payload = json.dumps(temp)
-
-        response = requests.put('{}{}'.format(app_uri, app_id), data=payload)
-    else:
-        print("Application {} does not exist, creating it now.".format(app_id))
-        response = requests.post(app_uri, data=payload)
-
-    # Trigger a restart to get new release (if applicable).
-    if trigger_restart:
-        requests.post('{}{}/restart'.format(app_uri, app_id))
-
-    print("Response from Marathon: {}".format(response.json()))
-
-    if not response.ok:
-        print("Unable to deploy application to Marathon.")
-        raise Exception("Unable to deploy application to Marathon.")
-
-    return True
-
 
 def main():
 
     try:
-        # Get all input values
-        environment_variables.load_values()
+        # Get all input values from environment
+        config_store.load_values()
 
-        server = environment_variables['SERVER']
+        server = config_store['SERVER']
         marathon_file = '{}/{}'.format(
-            environment_variables['PACKAGE_PATH'],
-            environment_variables['MARATHONFILE']
+            config_store['PACKAGE_PATH'],
+            config_store['MARATHONFILE']
         )
         print('Got environment values of: {}'.format(
-            environment_variables['VALUES'])
+            config_store['VALUES'])
         )
-        values = json.loads(environment_variables['VALUES'])
-        trigger_restart = environment_variables['TRIGGER_RESTART']
+        values = json.loads(config_store['VALUES'])
+        trigger_restart = config_store['TRIGGER_RESTART']
 
         print(server, marathon_file, values, trigger_restart)
         deploy_application(server, marathon_file, values, trigger_restart)
