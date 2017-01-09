@@ -11,7 +11,7 @@ publish:
   marathon:
     image: e20co/drone-marathon:0.5
     values:
-      BRANCH_NAME: $$BRANCH  # Where $$BRANCH = "mybranch"
+      BRANCH_NAME: ${CURRENT_BRANCH}  # Where ${CURRENT_BRANCH} = "mybranch"
 ```
 
 In the `marathon.json` file (please note the `<<` and `>>` around the `BRANCH_NAME` key):
@@ -50,8 +50,8 @@ publish:
     server: http://marathon.mesos:8080
     trigger_restart: true
     values:
-      BRANCH_NAME: $$BRANCH
-      TAG_NAME: $$TAG
+      BRANCH_NAME: ${CURRENT_BRANCH}
+      TAG_NAME: ${CURRENT_TAG}
       SOME_OTHER_VALUE: foobar
 ```
 
