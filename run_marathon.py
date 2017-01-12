@@ -29,6 +29,11 @@ def __build_marathon_payload(marathon_file, values):
 
     # Update the values in the marathon_file
     for k, v in values.items():
+        # If v=='${SOME_VALUE}', we should try to grab it from the env.
+        if v[0:2] == '${' and v[-1] == '}':
+            print('Will try to replace {} from environment.'.format(v))
+            v = os.environ.get(v[2:-1], v)
+
         data = data.replace('<<{}>>'.format(k), v)
 
     return data
