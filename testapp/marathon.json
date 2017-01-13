@@ -4,7 +4,7 @@
   "cpus": 0.2,
   "mem": 256,
   "container": {
-    "type": "docker",
+    "type": "DOCKER",
     "docker": {
       "image": "nginx:<<TAG>>",
       "network": "BRIDGE",
@@ -27,5 +27,8 @@
       "protocol": "HTTP",
       "timeoutSeconds": 5
     }
-  ]
+  ],
+  "env": {
+    "SOME_VALUE_KEY": "<<SOME_VALUE>>"
+  }
 }
