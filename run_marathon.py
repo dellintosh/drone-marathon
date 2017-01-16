@@ -30,7 +30,7 @@ def __build_marathon_payload(marathon_file, values):
     # Add environment (secrets) to values list
     for var_name, value in os.environ.items():
         if var_name.startswith('MARATHON_'):
-            values.append({var_name: value})
+            values.update({var_name: value})
 
     # Update the values in the marathon_file
     for k, v in values.items():
@@ -137,13 +137,9 @@ def main():
             config_store['PACKAGE_PATH'],
             config_store['MARATHONFILE']
         )
-        print('Got environment values of: {}'.format(
-            config_store['VALUES'])
-        )
         values = json.loads(config_store['VALUES'])
         trigger_restart = config_store['TRIGGER_RESTART']
 
-        print(server, marathon_file, values, trigger_restart)
         deploy_application(server, marathon_file, values, trigger_restart)
     except Exception as ex:
         print("Exception: {}".format(ex))
