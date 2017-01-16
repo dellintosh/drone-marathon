@@ -145,7 +145,8 @@ def main():
 
         print(server, marathon_file, values, trigger_restart)
         deploy_application(server, marathon_file, values, trigger_restart)
-    except Exception:
+    except Exception as ex:
+        print("Exception: {}".format(ex))
         sys.exit(1)
     # sys.exit(0)
 
