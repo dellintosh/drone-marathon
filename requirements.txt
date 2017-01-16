@@ -1,5 +1,2 @@
 evarify
-pip
 requests==2.8.1
-setuptools
-wheel

@@ -27,13 +27,13 @@ def __build_marathon_payload(marathon_file, values):
     with open(marathon_file, encoding='utf-8') as data_file:
         data = data_file.read()
 
+    # Add environment (secrets) to values list
+    for var_name, value in os.environ.items():
+        if var_name.startswith('MARATHON_'):
+            values.append({var_name: value})
+
     # Update the values in the marathon_file
     for k, v in values.items():
-        # If v=='${SOME_VALUE}', we should try to grab it from the env.
-        if v[0:2] == '${' and v[-1] == '}':
-            print('Will try to replace {} from environment.'.format(v))
-            v = os.environ.get(v[2:-1], v)
-
         data = data.replace('<<{}>>'.format(k), v)
 
     return data

@@ -16,21 +16,20 @@ pipeline:
       branch: drone-0.5
       event: push
 
-  # docker_indev:
-  #   image: plugins/docker
-  #   repo: e20co/drone-marathon
-  #   tag: indev
-  #   when:
-  #     branch: add-secret-parsing
-  #     event: push
+  docker_develop:
+    image: plugins/docker
+    repo: e20co/drone-marathon
+    tag: develop
+    when:
+      branch: develop
+      event: push
 
-  # marathon_indev:
-  #   image: e20co/drone-marathon:indev
-  #   marathonfile: testapp/marathon.json
-  #   server: http://marathon.mesos:8080
-  #   values:
-  #     SOME_VALUE: ${SECRET_VALUE}
-  #     TAG: latest
+  marathon_develop:
+    image: e20co/drone-marathon:develop
+    marathonfile: testapp/marathon.json
+    server: http://marathon.mesos:8080
+    values:
+      TAG: latest
 
 # TODO: We need to figure out how to test this package...
 # services:
