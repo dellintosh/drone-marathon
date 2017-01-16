@@ -41,8 +41,11 @@ def __build_marathon_payload(marathon_file, values):
 
 def deploy_application(server, marathon_file, values, trigger_restart=False):
     app_uri = '{}/v2/apps'.format(server)
-    payload = __build_marathon_payload(marathon_file, values)
-    app_id = json.loads(payload)['id']
+    try:
+        payload = __build_marathon_payload(marathon_file, values)
+        app_id = json.loads(payload)['id']
+    except Exception as ex:
+        raise ValueError("Unable to parse marathon_file. Got {}".format(ex))
 
     print("Deploying Marathon Application (at {})".format(app_uri))
 

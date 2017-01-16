@@ -6,7 +6,7 @@
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "nginx:<<TAG>>",
+      "image": "nginx",
       "network": "BRIDGE",
       "portMappings": [
         {

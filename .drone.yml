@@ -28,8 +28,7 @@ pipeline:
     image: e20co/drone-marathon:develop
     marathonfile: testapp/marathon.json
     server: http://marathon.mesos:8080
-    values:
-      TAG: latest
+
 
 # TODO: We need to figure out how to test this package...
 # services:
