@@ -17,14 +17,8 @@ class MarathonTestCase(unittest.TestCase):
 
     def setUp(self):
         os.environ.update(self.default_env)
-        run_marathon.environment_variables.load_values()
-
-    @classmethod
-    def setUpClass(cls):
-        # TODO: This should probably go away once load_values() accepts
-        # an optional override kwarg.
-        os.environ.update(cls.default_env)
-        run_marathon.environment_variables.load_values()
+        configs = run_marathon.config_store
+        print(configs)
 
     def test_upload(self):
         """

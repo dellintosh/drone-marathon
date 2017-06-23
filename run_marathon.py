@@ -22,7 +22,7 @@ def validate_marathon_server_url(config_val, evar):
     return config_val
 
 
-def __build_marathon_payload(marathon_file, values):
+def build_marathon_payload(marathon_file, values):
     # Load marathon_file data
     with open(marathon_file, encoding='utf-8') as data_file:
         data = data_file.read()
@@ -44,7 +44,7 @@ def __build_marathon_payload(marathon_file, values):
 def deploy_application(server, marathon_file, values, trigger_restart=False):
     app_uri = '{}/v2/apps'.format(server)
     try:
-        payload = __build_marathon_payload(marathon_file, values)
+        payload = build_marathon_payload(marathon_file, values)
         app_id = json.loads(payload)['id']
     except Exception as ex:
         raise ValueError("Unable to parse marathon_file. Got {}".format(ex))
@@ -103,7 +103,7 @@ config_store = ConfigStore({
         name='PLUGIN_VALUES',
         is_required=False,
         filters=[validate_is_not_none],
-        default_val='[]',
+        default_val=[],
         help_txt=(
             "Replace these keys (in your Marathon file) with values from the "
             "environment. This can be used to inject secrets or other "

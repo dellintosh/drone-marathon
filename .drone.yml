@@ -6,6 +6,12 @@ pipeline:
       - flake8 run_marathon.py
       - pip install -r requirements.txt
 
+  # test:
+  #   image: python:3.5.1-alpine
+  #   commands:
+  #     - pip install -r requirements.txt
+  #     - python test.py
+
   docker:
     image: plugins/docker
     repo: e20co/drone-marathon
