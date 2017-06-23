@@ -27,11 +27,13 @@ def __build_marathon_payload(marathon_file, values):
     with open(marathon_file, encoding='utf-8') as data_file:
         data = data_file.read()
 
+    print("Initial Values: {}".format(values))
     # Add environment (secrets) to values list
     for var_name, value in os.environ.items():
         if var_name.startswith('MARATHON_'):
             values.append(var_name)
 
+    print("Marathon-populated Values: {}".format(values))
     # Update the values in the marathon_file
     for value in values:
         data = data.replace('<<{}>>'.format(value), os.environ.get(value))
