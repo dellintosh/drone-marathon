@@ -1,13 +1,15 @@
 pipeline:
-  build:
-    image: python:3.5.1-alpine
-    commands:
-      - pip install --no-cache-dir --upgrade pip setuptools flake8
-      - flake8 run_marathon.py
-      - pip install -r requirements.txt
+  # build:
+  #   image: python:3.5.1-alpine
+  #   commands:
+  #     - pip install --no-cache-dir --upgrade pip setuptools flake8
+  #     - flake8 run_marathon.py
+  #     - pip install -r requirements.txt
 
   test:
     image: python:3.5.1-alpine
+    secrets: [marathon_secret_value, another_secret]
+    values: [another_secret]
     commands:
       - pip install -r requirements.txt
       - python test.py
