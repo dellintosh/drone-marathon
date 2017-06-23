@@ -1,7 +1,7 @@
 import os
 import unittest
 
-import run_marathon
+# import run_marathon
 
 BASE_PATH = os.path.dirname(os.path.abspath(__name__))
 # We use testapp as a sample application to publish.
@@ -16,15 +16,16 @@ class MarathonTestCase(unittest.TestCase):
     }
 
     def setUp(self):
-        os.environ.update(self.default_env)
-        configs = run_marathon.config_store
-        print(configs)
+        print("Environment: {}".format(os.environ.get()))
+        # os.environ.update(self.default_env)
+        # configs = run_marathon.config_store
+        # print(configs)
 
-    def test_upload(self):
-        """
-        Tests a simple application upload to a Marathon server.
-        """
-        run_marathon.main()
+    # def test_upload(self):
+    #     """
+    #     Tests a simple application upload to a Marathon server.
+    #     """
+    #     run_marathon.main()
 
 
 if __name__ == '__main__':

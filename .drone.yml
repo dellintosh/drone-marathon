@@ -6,30 +6,30 @@ pipeline:
       - flake8 run_marathon.py
       - pip install -r requirements.txt
 
-  # test:
-  #   image: python:3.5.1-alpine
-  #   commands:
-  #     - pip install -r requirements.txt
-  #     - python test.py
+  test:
+    image: python:3.5.1-alpine
+    commands:
+      - pip install -r requirements.txt
+      - python test.py
 
-  docker:
-    image: plugins/docker
-    repo: e20co/drone-marathon
-    tag: develop
-    secrets: [docker_username, docker_password]
-    when:
-      branch: drone-0.7
-      event: push
+  # docker:
+  #   image: plugins/docker
+  #   repo: e20co/drone-marathon
+  #   tag: develop
+  #   secrets: [docker_username, docker_password]
+  #   when:
+  #     branch: drone-0.7
+  #     event: push
 
-  marathon_deploy:
-    image: e20co/drone-marathon:develop
-    marathonfile: testapp/marathon.json
-    server: http://marathon.mesos:8080
-    secrets: [marathon_secret_value, another_secret]
-    values: [another_secret]
-    when:
-      branch: drone-0.7
-      event: push
+  # marathon_deploy:
+  #   image: e20co/drone-marathon:develop
+  #   marathonfile: testapp/marathon.json
+  #   server: http://marathon.mesos:8080
+  #   secrets: [marathon_secret_value, another_secret]
+  #   values: [another_secret]
+  #   when:
+  #     branch: drone-0.7
+  #     event: push
 
 # TODO: We need to figure out how to test this package...
 # services:
