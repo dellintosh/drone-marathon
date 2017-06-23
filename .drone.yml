@@ -9,7 +9,7 @@ pipeline:
   build:
     image: python:3.5.1-alpine
     secrets: [marathon_secret_value, another_secret]
-    values: [another_secret]
+    values: [marathon_secret_value, another_secret]
     commands:
       - pip install -r requirements.txt
       - python test.py
