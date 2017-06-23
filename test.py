@@ -15,8 +15,9 @@ class MarathonTestCase(unittest.TestCase):
         "PLUGIN_VALUES": '{"TAG": "alpine"}'
     }
 
-    def setUp(self):
-        print("Environment: {}".format(os.environ.get()))
+    def test_environment(self):
+        self.assertEqual({}, os.environ)
+        # print("Environment: {}".format(os.environ.get()))
         # os.environ.update(self.default_env)
         # configs = run_marathon.config_store
         # print(configs)
