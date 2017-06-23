@@ -2,33 +2,36 @@ pipeline:
   build:
     image: python:3.5.1-alpine
     commands:
-      - pip install --no-cache-dir --upgrade pip setuptools wheel flake8
+      - pip install --no-cache-dir --upgrade pip setuptools flake8
       - flake8 run_marathon.py
-      - pip wheel -r requirements.txt --wheel-dir=wheeldir --find-links=wheeldir
-      - pip install --use-wheel --no-index --find-links=wheeldir -r requirements.txt
-      # - python test.py
+      - pip install -r requirements.txt
 
   docker:
     image: plugins/docker
     repo: e20co/drone-marathon
-    tag: 0.5
+    tag: v0.7
+    secrets: [docker_username, docker_password]
     when:
-      branch: drone-0.5
+      branch: drone-0.7
       event: push
 
   docker_develop:
     image: plugins/docker
     repo: e20co/drone-marathon
     tag: develop
+    secrets: [docker_username, docker_password]
     when:
       branch: develop
       event: push
 
-  marathon_develop:
-    image: e20co/drone-marathon:develop
+  marathon_deploy:
+    image: e20co/drone-marathon:v0.7
     marathonfile: testapp/marathon.json
     server: http://marathon.mesos:8080
-
+    secrets: [marathon_secret_value]
+    when:
+      branch: drone-0.7
+      event: push
 
 # TODO: We need to figure out how to test this package...
 # services:
