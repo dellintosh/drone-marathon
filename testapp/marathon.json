@@ -29,6 +29,7 @@
     }
   ],
   "env": {
-    "SOME_VALUE": "<<MARATHON_SECRET_VALUE>>"
+    "SOME_VALUE": "<<MARATHON_SECRET_VALUE>>",
+    "ANOTHER_SECRET": "<<ANOTHER_SECRET_VALUE>>"
   }
 }

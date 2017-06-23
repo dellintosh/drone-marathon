@@ -28,7 +28,9 @@ pipeline:
     image: e20co/drone-marathon:v0.7
     marathonfile: testapp/marathon.json
     server: http://marathon.mesos:8080
-    secrets: [marathon_secret_value]
+    secrets: [marathon_secret_value, another_secret]
+    values:
+      ANOTHER_SECRET_VALUE: $ANOTHER_SECRET
     when:
       branch: drone-0.7
       event: push
