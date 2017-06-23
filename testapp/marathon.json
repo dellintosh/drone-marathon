@@ -30,6 +30,6 @@
   ],
   "env": {
     "SOME_VALUE": "<<MARATHON_SECRET_VALUE>>",
-    "ANOTHER_SECRET": "<<ANOTHER_SECRET_VALUE>>"
+    "ANOTHER_SECRET_IS_HERE": "<<ANOTHER_SECRET>>"
   }
 }

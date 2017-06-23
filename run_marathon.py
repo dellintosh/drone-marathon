@@ -30,11 +30,11 @@ def __build_marathon_payload(marathon_file, values):
     # Add environment (secrets) to values list
     for var_name, value in os.environ.items():
         if var_name.startswith('MARATHON_'):
-            values.update({var_name: value})
+            values.append(var_name)
 
     # Update the values in the marathon_file
-    for k, v in values.items():
-        data = data.replace('<<{}>>'.format(k), v)
+    for value in values:
+        data = data.replace('<<{}>>'.format(value), os.environ.get(value))
 
     return data
 
@@ -101,10 +101,11 @@ config_store = ConfigStore({
         name='PLUGIN_VALUES',
         is_required=False,
         filters=[validate_is_not_none],
-        default_val='{}',
+        default_val='[]',
         help_txt=(
-            "Values (as an object) where key/value will be replaced in "
-            "your specified marathonfile, as needed."
+            "Replace these keys (in your Marathon file) with values from the environment. "
+            "This can be used to inject secrets or other environment variables into the "
+            "marathon.json file."
         )
     ),
     'PACKAGE_PATH': EnvironmentVariable(
