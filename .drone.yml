@@ -6,7 +6,7 @@ pipeline:
   #     - flake8 run_marathon.py
   #     - pip install -r requirements.txt
 
-  test:
+  build:
     image: python:3.5.1-alpine
     secrets: [marathon_secret_value, another_secret]
     values: [another_secret]
