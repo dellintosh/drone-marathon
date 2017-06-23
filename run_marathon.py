@@ -103,9 +103,9 @@ config_store = ConfigStore({
         filters=[validate_is_not_none],
         default_val='[]',
         help_txt=(
-            "Replace these keys (in your Marathon file) with values from the environment. "
-            "This can be used to inject secrets or other environment variables into the "
-            "marathon.json file."
+            "Replace these keys (in your Marathon file) with values from the "
+            "environment. This can be used to inject secrets or other "
+            "environment variables into the marathon.json file."
         )
     ),
     'PACKAGE_PATH': EnvironmentVariable(
