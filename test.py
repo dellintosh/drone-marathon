@@ -16,8 +16,8 @@ class MarathonTestCase(unittest.TestCase):
     }
 
     def test_environment(self):
-        self.assertEqual({}, os.environ)
-        # print("Environment: {}".format(os.environ.get()))
+        print("Environment: {}".format(os.environ.items()))
+        self.assertEqual('foo', 'bar')
         # os.environ.update(self.default_env)
         # configs = run_marathon.config_store
         # print(configs)
