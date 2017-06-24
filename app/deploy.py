@@ -8,11 +8,14 @@ import requests
 
 def deploy_application(server, payload, trigger_restart=False):
     app_uri = '{}/v2/apps'.format(server)
+    headers = {
+        'Content-Type': 'application/json',
+    }
     app_id = json.loads(payload)['id']
 
     print("Deploying Marathon Application (at {})".format(app_uri))
 
-    check_app_exists = requests.get('{}{}'.format(app_uri, app_id)).ok
+    check_app_exists = requests.get('{}{}'.format(app_uri, app_id), headers=headers).ok
     if check_app_exists:
         print("Application {} already exists...updating.".format(app_id))
 
@@ -20,19 +23,19 @@ def deploy_application(server, payload, trigger_restart=False):
         del temp['id']
         payload = json.dumps(temp)
 
-        response = requests.put('{}{}'.format(app_uri, app_id), data=payload)
+        response = requests.put('{}{}'.format(app_uri, app_id), data=payload, headers=headers)
     else:
         print("Application {} does not exist, creating it now.".format(app_id))
-        response = requests.post(app_uri, data=payload)
+        response = requests.post(app_uri, data=payload, headers=headers)
 
     # Trigger a restart to get new release (if applicable).
     if trigger_restart:
-        requests.post('{}{}/restart'.format(app_uri, app_id))
+        requests.post('{}{}/restart'.format(app_uri, app_id), headers=headers)
 
     print("Response from Marathon: {}".format(response.json()))
 
     if not response.ok:
-        print("Unable to deploy application to Marathon. Got {}".format(response.text))
-        raise Exception("Unable to deploy application to Marathon. Got {}".format(response.text))
+        print("Unable to deploy application to Marathon. Got {}".format(response.json()))
+        raise Exception("Unable to deploy application to Marathon. Got {}".format(response.json()))
 
     return True
