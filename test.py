@@ -30,11 +30,14 @@ class MarathonTestCase(unittest.TestCase):
         self.assertIn('TRIGGER_RESTART', self.configs)
 
     def test_build_payload_injects_secrets(self):
-        payload = app.build_payload(self.configs['MARATHON_FILE'], self.configs['VALUES'])
+        payload = app.util.build_payload(self.configs['MARATHON_FILE'], self.configs['VALUES'])  # SUT
         actual = json.loads(payload)
 
         self.assertEqual(self.marathon_secret_value, actual['env']['SOME_VALUE'])
         self.assertEqual(self.another_secret, actual['env']['ANOTHER_SECRET_IS_HERE'])
+
+    def test_deploy(self):
+        pass
 
 
 if __name__ == '__main__':

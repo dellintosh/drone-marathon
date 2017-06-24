@@ -6,7 +6,7 @@ pipeline:
   #     - flake8 run_marathon.py
   #     - pip install -r requirements.txt
 
-  build:
+  test:
     image: python:3.5.1-alpine
     marathonfile: testapp/marathon.json
     server: http://localhost:8080
