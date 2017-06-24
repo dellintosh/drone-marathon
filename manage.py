@@ -14,7 +14,7 @@ def main():
         app.config.load_values()
         server = app.config['SERVER']
         marathon_file = '{}/{}'.format(os.getcwd(), app.config['MARATHON_FILE'])
-        values = app.config['VALUES'].split(',')
+        values = app.config['VALUES']
         trigger_restart = app.config['TRIGGER_RESTART']
 
         # Build payload
