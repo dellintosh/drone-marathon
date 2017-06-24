@@ -8,12 +8,11 @@ import requests
 
 def deploy_application(server, payload, trigger_restart=False):
     app_uri = '{}/v2/apps'.format(server)
+    print("Deploying Marathon Application (at {}): {}".format(app_uri, payload))
     headers = {
         'Content-Type': 'application/json',
     }
     app_id = json.loads(payload)['id']
-
-    print("Deploying Marathon Application (at {})".format(app_uri))
 
     check_app_exists = requests.get('{}{}'.format(app_uri, app_id), headers=headers).ok
     if check_app_exists:
