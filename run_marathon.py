@@ -30,7 +30,7 @@ def build_marathon_payload(marathon_file, values):
     print("Marathon-populated Values: {}".format(values))
     # Update the values in the marathon_file
     for value in values:
-        data = data.replace('<<{}>>'.format(value), os.environ.get(value))
+        data = data.replace('<<{}>>'.format(value.upper()), os.environ.get(value.upper()))
 
     return data
 
@@ -134,7 +134,7 @@ def main():
             config_store['PACKAGE_PATH'],
             config_store['MARATHONFILE']
         )
-        values = json.loads(config_store['VALUES'])
+        values = config_store['VALUES'].split(',')
         trigger_restart = config_store['TRIGGER_RESTART']
 
         deploy_application(server, marathon_file, values, trigger_restart)
