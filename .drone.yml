@@ -12,6 +12,8 @@ pipeline:
     server: http://localhost:8080
     secrets: [marathon_secret_value, another_secret]
     values: [marathon_secret_value, another_secret]
+    environment:
+      - PYTHONPATH=/drone/src/app
     commands:
       - pip install -r requirements.txt
       - python test.py

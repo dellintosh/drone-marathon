@@ -2,7 +2,7 @@ import json
 import os
 import unittest
 
-import app.config
+import app
 
 BASE_PATH = os.path.dirname(os.path.abspath(__name__))
 # We use testapp as a sample application to publish.
