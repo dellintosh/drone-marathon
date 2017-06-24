@@ -21,14 +21,14 @@ pipeline:
   docker:
     image: plugins/docker
     repo: e20co/drone-marathon
-    tag: develop
+    tag: latest
     secrets: [docker_username, docker_password]
     when:
       branch: drone-0.7
       event: push
 
   marathon_deploy:
-    image: e20co/drone-marathon:develop
+    image: e20co/drone-marathon
     marathonfile: testapp/marathon.json
     server: http://marathon.mesos:8080
     secrets: [marathon_secret_value, another_secret]
