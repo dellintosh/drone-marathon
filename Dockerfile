@@ -12,8 +12,6 @@ COPY app /run/app
 
 ENTRYPOINT ["python", "/run/manage.py"]
 
-CMD ["deploy"]
-
 # FROM python:3.5.1-alpine
 #
 # WORKDIR /app
