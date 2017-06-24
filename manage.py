@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import sys
 
-import app
 import app.util
 import app.deploy
 
