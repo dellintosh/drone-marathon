@@ -8,7 +8,7 @@ import requests
 
 def deploy_application(server, payload, trigger_restart=False):
     app_uri = '{}/v2/apps'.format(server)
-    print("Deploying Marathon Application (at {}): {}".format(app_uri, payload))
+    print("Deploying Marathon Application (at {})".format(app_uri))
     headers = {
         'Content-Type': 'application/json',
     }

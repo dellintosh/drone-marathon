@@ -21,7 +21,7 @@ def main():
         try:
             print('Building payload...')
             payload = app.util.build_payload(marathon_file, values)
-            print('Payload Built: {}'.format(payload))
+            # print('Payload Built: {}'.format(payload))
         except Exception as ex:
             raise ValueError('Unable to parse marathon_file. Got {}'.format(ex))
 
