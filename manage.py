@@ -2,8 +2,8 @@
 import os
 import sys
 
-import app.util
 import app.deploy
+import app.util
 
 
 def main():

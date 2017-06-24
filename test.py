@@ -22,6 +22,8 @@ class MarathonTestCase(unittest.TestCase):
         # Bootstrap environment
         app.config.load_values()
         self.configs = app.config
+        # In testing mode, the values need to be split (in prod they come in as a list already)
+        self.configs['VALUES'] = self.configs['VALUES'].split(',')
 
     def test_environment(self):
         self.assertIn('SERVER', self.configs)
