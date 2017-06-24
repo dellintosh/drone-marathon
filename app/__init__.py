@@ -1,7 +1,8 @@
 import urllib.parse
 
 from evarify import ConfigStore, EnvironmentVariable
-from evarify.filters.python_basics import validate_is_not_none, value_to_none, value_to_bool
+from evarify.filters.python_basics import validate_is_not_none, value_to_none, value_to_bool,\
+     comma_separated_str_to_list
 
 
 def validate_marathon_server_url(config_val, evar):
@@ -38,7 +39,7 @@ config = ConfigStore({
     'VALUES': EnvironmentVariable(
         name='PLUGIN_VALUES',
         is_required=False,
-        filters=[validate_is_not_none],
+        filters=[validate_is_not_none, comma_separated_str_to_list],
         default_val=[],
         help_txt=(
             "Replace these keys (in your Marathon file) with values from the "
