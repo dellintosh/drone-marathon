@@ -38,6 +38,12 @@ class MarathonTestCase(unittest.TestCase):
         self.assertEqual(self.another_secret, actual['env']['ANOTHER_SECRET_IS_HERE'])
 
     def test_deploy(self):
+        # TODO: Figure out how to test `deploy_application`!!
+        # payload = app.util.build_payload(self.configs['MARATHON_FILE'], self.configs['VALUES'])  # SUT
+        # server = 'https://localhost:8080'
+        # actual = app.deploy.deploy_application(server, payload, False)
+
+        # self.assertEqual('foo', actual)
         pass
 
 

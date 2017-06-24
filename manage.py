@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 import sys
 
 import app.util
@@ -12,7 +13,7 @@ def main():
         print('Starting...')
         app.config.load_values()
         server = app.config['SERVER']
-        marathon_file = '{}/{}'.format(app.config['PACKAGE_PATH'], app.config['MARATHON_FILE'])
+        marathon_file = '{}/{}'.format(os.getcwd(), app.config['MARATHON_FILE'])
         values = app.config['VALUES'].split(',')
         trigger_restart = app.config['TRIGGER_RESTART']
 
