@@ -16,7 +16,9 @@ class MarathonTestCase(unittest.TestCase):
     }
 
     def test_environment(self):
-        print("Environment: {}".format(os.environ.items()))
+        values = os.environ.get('PLUGIN_VALUES').split(',')
+        for value in values:
+            print("Environment {} has value: {}".format(value, os.environ.get(value.upper())))
         self.assertEqual('foo', 'bar')
         # os.environ.update(self.default_env)
         # configs = run_marathon.config_store
