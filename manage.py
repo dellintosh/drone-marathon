@@ -7,10 +7,10 @@ import app.deploy
 
 
 def main():
+    print('Starting...')
 
     try:
         # Get all input values from environment
-        print('Starting...')
         app.config.load_values()
         server = app.config['SERVER']
         marathon_file = '{}/{}'.format(os.getcwd(), app.config['MARATHON_FILE'])

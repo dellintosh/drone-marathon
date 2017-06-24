@@ -6,8 +6,6 @@ import app.deploy
 import app.util
 
 BASE_PATH = os.path.dirname(os.path.abspath(__name__))
-# We use testapp as a sample application to publish.
-TEST_PACKAGE_PATH = os.path.join(BASE_PATH, "testapp")
 
 
 class MarathonTestCase(unittest.TestCase):

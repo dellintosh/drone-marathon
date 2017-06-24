@@ -48,13 +48,6 @@ config = ConfigStore({
             "environment variables into the marathon.json file."
         )
     ),
-    'PACKAGE_PATH': EnvironmentVariable(
-        name='PLUGIN_PACKAGE_PATH',
-        is_required=False,
-        filters=[value_to_none, validate_is_not_none],
-        default_val=os.getcwd(),
-        help_txt="Path to the package to upload.",
-    ),
     'TRIGGER_RESTART': EnvironmentVariable(
         name='PLUGIN_TRIGGER_RESTART',
         is_required=False,

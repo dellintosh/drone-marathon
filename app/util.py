@@ -3,6 +3,7 @@ import os
 
 def build_payload(marathon_file, values):
     # Load marathon_file data
+    print('Reading in Marathon File: {}'.format(marathon_file))
     with open(marathon_file, encoding='utf-8') as data_file:
         data = data_file.read()
 
