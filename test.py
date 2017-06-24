@@ -1,7 +1,8 @@
+import json
 import os
 import unittest
 
-import run_marathon
+import app.config
 
 BASE_PATH = os.path.dirname(os.path.abspath(__name__))
 # We use testapp as a sample application to publish.
@@ -10,33 +11,30 @@ TEST_PACKAGE_PATH = os.path.join(BASE_PATH, "testapp")
 
 class MarathonTestCase(unittest.TestCase):
 
-    default_env = {
-        "PLUGIN_SERVER": "http://localhost:8080",
-        "PLUGIN_PACKAGE_PATH": TEST_PACKAGE_PATH,
-        "PLUGIN_VALUES": '{"TAG": "alpine"}'
-    }
-
     def setUp(self):
+        self.maxDiff = None
+
+        # Add secrets
+        self.marathon_secret_value = 'SomeSecretValue'
+        self.another_secret = 'AnotherSecretValueIsHere'
+        os.environ['MARATHON_SECRET_VALUE'] = self.marathon_secret_value
+        os.environ['ANOTHER_SECRET'] = self.another_secret
+
         # Bootstrap environment
-        # for key, val in self.default_env.items():
-        #     os.putenv(key, val)
-        self.configs = run_marathon.config_store.load_values()
+        app.config.load_values()
+        self.configs = app.config
 
     def test_environment(self):
-        print(self.configs)
-        # values = os.environ.get('PLUGIN_VALUES').split(',')
-        # for value in values:
-        #     print("Environment {} has value: {}".format(value.upper(), os.environ.get(value.upper())))
-        self.assertEqual('foo', 'bar')
-        # os.environ.update(self.default_env)
-        # configs = run_marathon.config_store
-        # print(configs)
+        self.assertIn('SERVER', self.configs)
+        self.assertIn('MARATHON_FILE', self.configs)
+        self.assertIn('TRIGGER_RESTART', self.configs)
 
-    # def test_upload(self):
-    #     """
-    #     Tests a simple application upload to a Marathon server.
-    #     """
-    #     run_marathon.main()
+    def test_build_payload_injects_secrets(self):
+        payload = app.build_payload(self.configs['MARATHON_FILE'], self.configs['VALUES'])
+        actual = json.loads(payload)
+
+        self.assertEqual(self.marathon_secret_value, actual['env']['SOME_VALUE'])
+        self.assertEqual(self.another_secret, actual['env']['ANOTHER_SECRET_IS_HERE'])
 
 
 if __name__ == '__main__':

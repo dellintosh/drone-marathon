@@ -8,6 +8,8 @@ pipeline:
 
   build:
     image: python:3.5.1-alpine
+    marathonfile: testapp/marathon.json
+    server: http://localhost:8080
     secrets: [marathon_secret_value, another_secret]
     values: [marathon_secret_value, another_secret]
     commands:
